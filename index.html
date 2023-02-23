@@ -2,7 +2,9 @@
 <html>
 
 <head>
-    <title>My experiment</title>
+    <title>9.60 Tutorial Experiment</title>
+    <meta http-equiv="pragma" content="no-cache">
+    <script src="util.js"></script>
     <script src="https://unpkg.com/jspsych@7.3.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
@@ -13,24 +15,6 @@
 <body></body>
 
 <script>
-    function write_data_to_server() {
-        /*
-        This function sends a data packet to the specified URL as a POST request.
-        The specified URL is for a PHP script that writes the POST request's
-        contents (`filename` and `filedata`) to a file on the server.
-        */
-        jQuery.ajax({
-            type: 'post',
-            cache: false,
-            url: url_write_data_php, // Global variable defined below
-            data: {
-                filename: output_filename, // Global variable defined below
-                filedata: jsPsych.data.get().json(),
-            },
-        });
-        console.log('Attempted to write data to: ' + output_filename);
-    }
-
 
     var jsPsych = initJsPsych({
         on_finish: function () {
@@ -51,10 +35,9 @@
     // var subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID'); // capture info from Prolific
     // var session_id = jsPsych.data.getURLVariable('SESSION_ID'); // capture info from Prolific
     // var study_id = jsPsych.data.getURLVariable('STUDY_ID'); // capture info from Prolific
-    // var completion_url = 'https://app.prolific.co/submissions/complete?cc=AAAAAAAA'; // UPDATE THIS
+    // var completion_url = 'https://app.prolific.co/submissions/complete?cc=AAAAAAAA'; // Get from Prolific
     var output_filename = `data/expt00_${subject_id}.json`;
     console.log(`Data will be saved to: ${url_experiment_dir + output_filename }`);
-    
 
     var hello_trial = {
         type: jsPsychHtmlKeyboardResponse,
