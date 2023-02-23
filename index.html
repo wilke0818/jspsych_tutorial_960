@@ -5,30 +5,58 @@
     <title>My experiment</title>
     <script src="https://unpkg.com/jspsych@7.3.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
     <link href="https://unpkg.com/jspsych@7.3.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
 <body></body>
 
 <script>
-    function saveData(name, data) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({ filename: name, filedata: data }));
+    function write_data_to_server() {
+        /*
+        This function sends a data packet to the specified URL as a POST request.
+        The specified URL is for a PHP script that writes the POST request's
+        contents (`filename` and `filedata`) to a file on the server.
+        */
+        jQuery.ajax({
+            type: 'post',
+            cache: false,
+            url: url_write_data_php, // Global variable defined below
+            data: {
+                filename: output_filename, // Global variable defined below
+                filedata: jsPsych.data.get().json(),
+            },
+        });
+        console.log('Attempted to write data to: ' + output_filename);
     }
 
-    const filename = 'data/mydata.json'
 
-    // call the saveData function after the experiment is over
-    const jsPsych = initJsPsych({
+    var jsPsych = initJsPsych({
         on_finish: function () {
             // jsPsych.data.get().localSave('json','mydata.json');
-            saveData(filename, jsPsych.data.get().json());
+            write_data_to_server();
         }
     });
 
-    const hello_trial = {
+    // Set parameters for saving data and collecting participant identifiers
+    var url_experiment_dir = 'https://msaddler.scripts.mit.edu/jspsych_tutorial_960/';
+    var url_write_data_php = url_experiment_dir + 'write_data.php';
+    var subject_id = jsPsych.data.getURLVariable('subject_id');
+    console.log(`subject_id from URL: ${subject_id}`)
+    if (!subject_id){
+        subject_id = jsPsych.randomization.randomID(10);
+        console.log(`Assigned random subject_id: ${subject_id}`)
+    }
+    // var subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID'); // capture info from Prolific
+    // var session_id = jsPsych.data.getURLVariable('SESSION_ID'); // capture info from Prolific
+    // var study_id = jsPsych.data.getURLVariable('STUDY_ID'); // capture info from Prolific
+    // var completion_url = 'https://app.prolific.co/submissions/complete?cc=AAAAAAAA'; // UPDATE THIS
+    var output_filename = `data/expt00_${subject_id}.json`;
+    console.log(`Data will be saved to: ${url_experiment_dir + output_filename }`);
+    
+
+    var hello_trial = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: 'Hello world!'
     }
