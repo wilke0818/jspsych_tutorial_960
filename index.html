@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="https://unpkg.com/jspsych@7.3.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <link href="https://unpkg.com/jspsych@7.3.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body></body>
+
+<script>
+    function saveData(name, data) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({ filename: name, filedata: data }));
+    }
+
+    const filename = 'data/mydata.json'
+
+    // call the saveData function after the experiment is over
+    const jsPsych = initJsPsych({
+        on_finish: function () {
+            // jsPsych.data.get().localSave('json','mydata.json');
+            saveData(filename, jsPsych.data.get().json());
+        }
+    });
+
+    const hello_trial = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: 'Hello world!'
+    }
+
+    jsPsych.run([hello_trial]);
+</script>
+
+</html>
