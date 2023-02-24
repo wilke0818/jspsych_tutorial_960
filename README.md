@@ -40,7 +40,7 @@ With just these pieces, it can be quite straightforward to collect data from hug
         ```
     * This will make a `web_scripts` folder in your home directory that is visible to the web. Let's put something in it:
         ```
-        $ echo "You have reached the mit.scripts.edu homepage of $(whoami)" > web_scripts/index.html
+        $ echo "You have reached the mit.scripts.edu homepage of $(whoami)" > ~/web_scripts/index.html
         ```
     * You should now be able to access your scripts.mit.edu homepage from the web. Mine is [https://msaddler.scripts.mit.edu](https://msaddler.scripts.mit.edu).<br><br>
 
