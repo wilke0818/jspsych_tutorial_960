@@ -58,12 +58,13 @@ With just these pieces, it can be quite straightforward to collect data from hug
 
 5. End your terminal's SSH connection to Athena using the `exit` command or `Ctrl-D`.<br>
 
-6. Follow [these instructions](https://code.visualstudio.com/docs/remote/ssh#_connect-to-a-remote-host) to make an SSH connection to Athena using the **Remote - SSH extension in VSCode**.
+6. Follow [these instructions](https://code.visualstudio.com/docs/remote/ssh#_connect-to-a-remote-host) to make a new SSH connection to Athena via the **Remote - SSH extension in VSCode** (not your operating system's terminal).
     * For `ssh user@hostname`, you will use `ssh kerberos@athena.dialup.mit.edu` with your kerberos ID.
     * You should be prompted for your kerberos password and two-factor authentification in the VSCode search bar.
-    * Once successfully connected, you should be able to open your `web_scripts` folder in VSCode.<br><br>
+    * Once successfully connected, you should be able to open your `web_scripts` folder in VSCode.
+    * Within that folder, you should see the `index.html` file that was created in the last part of **Step #3**. Editing the `index.html` file will change what you see when you visit your scripts.mit.edu homepage (visit at https://kerberos.scripts.mit.edu). Note that updates may take a few minutes to appear on the web.<br><br>
 
-7. Make a copy of of this repository on both your local machine and in your Athena `web_scripts` folder.
+7. Make a copy of of this Github repository on both your local machine and in your Athena `web_scripts` folder.
     * There are multiple ways to [transfer files between your local machine and Athena](http://kb.mit.edu/confluence/pages/viewpage.action?pageId=3907182). One simple way is with the `rsync` command in your local terminal:
         ```
         $ rsync -rav jspsych_tutorial_960 kerberos@athena.dialup.mit.edu:~/web_scripts
