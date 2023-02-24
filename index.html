@@ -2,14 +2,11 @@
 <html>
 
 <head>
-    <title>9.60 Tutorial Experiment</title>
+    <title>MIT 9.60 Tutorial: Online Experiments</title>
     <meta http-equiv="pragma" content="no-cache">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link href="https://unpkg.com/jspsych@7.3.1/css/jspsych.css" rel="stylesheet" type="text/css" />
-    <script src="util.js"></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
     <script src="https://unpkg.com/jspsych@7.3.1"></script>
-    
     <!-- <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-instructions@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script> -->
@@ -24,45 +21,34 @@
     <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-image@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-free-sort@1.0.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/extension-mouse-tracking@1.0.2"></script> -->
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
+    <script src="util.js"></script>
 </head>
 
 <body></body>
 
 <script>
-
     var jsPsych = initJsPsych({
         on_finish: function () {
             jsPsych.data.displayData();
-            // jsPsych.data.get().localSave('json','mydata.json');
-            // write_data_to_server();
-            // output_filename_exists();
         }
     });
 
-    // Set parameters for saving data and collecting participant identifiers
-    var url_experiment_dir = 'https://msaddler.scripts.mit.edu/jspsych_tutorial_960/';
-    var url_write_data_php = url_experiment_dir + 'write_data.php';
-    var subject_id = jsPsych.data.getURLVariable('subject_id');
-    console.log(`subject_id from URL: ${subject_id}`);
-    if (!subject_id){
-        subject_id = jsPsych.randomization.randomID(10);
-        console.log(`Assigned random subject_id: ${subject_id}`);
-    }
-    // var subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID'); // capture info from Prolific
-    // var session_id = jsPsych.data.getURLVariable('SESSION_ID'); // capture info from Prolific
-    // var study_id = jsPsych.data.getURLVariable('STUDY_ID'); // capture info from Prolific
-    // var completion_url = 'https://app.prolific.co/submissions/complete?cc=AAAAAAAA'; // Get from Prolific
-    var output_filename = `data/expt00_${subject_id}.json`;
-    console.log(`Data will be saved to: ${url_experiment_dir + output_filename }`);
-
-    var hello_trial = {
+    var trial = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: 'Hello world!',
-        prompt: 'Press the button to end the experiment!',
-        choices: ['End'],
+        stimulus: [
+            '<h2>MIT 9.60 Tutorial: Online Psychophysics Experiments</h2>' +
+            '<h3>The links below lead to example experiments from this tutorial:</h3>' +
+            '<p><a href="https://msaddler.scripts.mit.edu/jspsych_tutorial_960/0_hello_world.html?subject_id=tmp">Experiment 0: Hello World</a></p>' +
+            '<p><a href="https://msaddler.scripts.mit.edu/jspsych_tutorial_960/1_beginner.html?subject_id=tmp">Experiment 1: Beginner</a></p>' +
+            '<p><a href="https://msaddler.scripts.mit.edu/jspsych_tutorial_960/2_intermediate.html?subject_id=tmp">Experiment 2: Intermediate</a></p>' +
+            '<p><a href="https://msaddler.scripts.mit.edu/jspsych_tutorial_960/3_advanced.html?subject_id=tmp">Experiment 3: Advanced</a></p>' +
+            '<p><a href="https://msaddler.scripts.mit.edu/jspsych_tutorial_960/4_expert.html?subject_id=tmp">Experiment 4: Expert</a></p>'
+        ],
+        choices: [],
     };
 
-    jsPsych.run([hello_trial]);
+    jsPsych.run([trial]);
 </script>
 
 </html>
