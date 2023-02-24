@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Experiment 1</title>
+    <title>Beginner</title>
     <meta http-equiv="pragma" content="no-cache">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link href="https://unpkg.com/jspsych@7.3.1/css/jspsych.css" rel="stylesheet" type="text/css" />
@@ -18,9 +18,9 @@
 <script>
     // Initialize the jsPsych object (possibly with arguments: https://www.jspsych.org/7.3/reference/jspsych/)
     var jsPsych = initJsPsych({
-        on_finish: function() {
+        on_finish: function () {
             jsPsych.data.displayData(); // Print data to screen at the end
-            jsPsych.data.get().localSave('json','mydata.json'); // Save data to local computer
+            jsPsych.data.get().localSave('json', 'mydata.json'); // Save data to local computer
         },
         show_progress_bar: true,
     });
@@ -50,7 +50,7 @@
         prompt: 'Was the person pictured correctly wearing a face mask?',
         choices: ['Correctly wearing mask', 'Incorrectly wearing mask', 'Not wearing mask'],
     };
-    timeline.push(trial_0)
+    timeline.push(trial_0);
 
     var trial_1 = {
         type: jsPsychImageButtonResponse, // This trial will use the "image-button-response" plugin
@@ -61,18 +61,18 @@
         prompt: 'Was the person pictured correctly wearing a face mask?',
         choices: ['Correctly wearing mask', 'Incorrectly wearing mask', 'Not wearing mask'],
     };
-    timeline.push(trial_1)
+    timeline.push(trial_1);
 
     var trial_2 = {
         type: jsPsychImageButtonResponse, // This trial will use the "image-button-response" plugin
         stimulus: 'images/condition2/40.png',
         maintain_aspect_ratio: true,
-        stimulus_width: 300,
+        stimulus_width: 600,
         stimulus_duration: 500,
         prompt: 'Was the person pictured correctly wearing a face mask?',
         choices: ['Correctly wearing mask', 'Incorrectly wearing mask', 'Not wearing mask'],
     };
-    timeline.push(trial_2)
+    timeline.push(trial_2);
 
     var trial_end = {
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin

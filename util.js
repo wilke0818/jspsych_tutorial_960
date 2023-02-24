@@ -13,7 +13,7 @@ function write_data_to_server() {
             filedata: jsPsych.data.get().json(),
         },
     });
-    console.log('Attempted to write data to: ' + output_filename);
+    console.log(`Attempted to write data to: ${output_filename}`);
 }
 
 
