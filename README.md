@@ -127,9 +127,7 @@ With just these pieces, it can be quite straightforward to collect data from hug
 * [2_intermediate.html](2_intermediate.html) : timeline variables and nested timelines + writing data to server
 * [3_advanced.html](3_advanced.html) : programatically generating timeline variables + pre-loading images + feedback
 * [4_expert.html](4_expert.html) : fancier plugins and extensions (mouse-tracking / sorting) + integration with Prolific
-
 * [template.html](template.html) : **blank experiment for you to fill in during the tutorial**
-
 * [util.js](util.js) : some helpful JavaScript functions that can be called within html files
 * [write_data.php](write_data.php) : PHP script that can receive data from a webpage and write it to file
 

@@ -71,8 +71,9 @@
     var first_page = {
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
         stimulus: [
-            '<h2>Simple image classification experiment</h2>' +
-            '<p>In this experiment, you will briefly see images of human faces.</p>' +
+            '<h2>Demo of fancier plugins</h2>' +
+            '<p><b>These plugins may not work with all browswers / devices.</b></p>' +
+            '<p>In this experiment, ...</p>' +
             '<p>Your task is to...</p>'
         ],
         choices: ['Begin experiment'],
@@ -82,7 +83,7 @@
     // Mouse-tracking draw trial
     var trial_draw = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: '<div id="target" style="width:250px; height: 250px; background-color: #333; margin: auto;"></div>',
+        stimulus: '<div id="target" style="width:450px; height: 450px; background-color: #666; margin: auto;"></div>',
         choices: ['Done'],
         prompt: "<p>Move your mouse around inside the square.</p>",
         extensions: [
@@ -97,7 +98,7 @@
     // Mouse-tracking replay trial
     var trial_replay = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: '<div id="target" style="width:250px; height: 250px; background-color: #333; margin: auto; position: relative;"></div>',
+        stimulus: '<div id="target" style="width:450px; height: 450px; background-color: #666; margin: auto; position: relative;"></div>',
         choices: ['Done'],
         prompt: "<p>Here's the recording of your mouse movements</p>",
         on_load: function () {
@@ -126,9 +127,9 @@
 
     // Image sorting trial (NOTE: this seems to work for Chrome but not Safari)
     stimuli_to_sort = [];
-    list_image_num = arange(40, 60, 1);
-    for (var itr = 0; itr < 5; itr += 1) {
-        stimuli_to_sort.push(`images/condition2/${list_image_num[itr]}.png`)
+    list_image_num = jsPsych.randomization.repeat(arange(40, 60, 1), 1);
+    for (var itr = 0; itr < 6; itr += 1) {
+        stimuli_to_sort.push(`images/condition0/${list_image_num[itr]}.png`)
     }
     console.log(stimuli_to_sort);
     var trial_sort = {
