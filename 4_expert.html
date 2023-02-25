@@ -20,7 +20,7 @@
     <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-html@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-image@1.1.2"></script> -->
     <script src="https://unpkg.com/@jspsych/plugin-free-sort@1.0.2"></script>
-    <!-- <script src="https://unpkg.com/@jspsych/extension-mouse-tracking@1.0.2"></script> -->
+    <script src="https://unpkg.com/@jspsych/extension-mouse-tracking@1.0.2"></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
     <script src="util.js"></script>
 </head>
@@ -33,7 +33,11 @@
         on_finish: function () {
             jsPsych.data.displayData();
             write_data_to_server();
-        }
+        },
+        extensions: [{
+            type: jsPsychExtensionMouseTracking,
+            params: { minimum_sample_time: 0 },
+        }]
     });
 
     // The `write_data_to_server` function requires two global variables to be defined:
@@ -64,7 +68,7 @@
     timeline.push(preload);
 
     // Always good to put experiment instructions /  disclaimers on the first page
-    var trial_instructions = {
+    var first_page = {
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
         stimulus: [
             '<h2>Simple image classification experiment</h2>' +
@@ -73,9 +77,54 @@
         ],
         choices: ['Begin experiment'],
     };
-    timeline.push(trial_instructions);
+    timeline.push(first_page);
 
-    // Sort images trial (NOTE: this seems to work for Chrome but not Safari)
+    // Mouse-tracking draw trial
+    var trial_draw = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<div id="target" style="width:250px; height: 250px; background-color: #333; margin: auto;"></div>',
+        choices: ['Done'],
+        prompt: "<p>Move your mouse around inside the square.</p>",
+        extensions: [
+            { type: jsPsychExtensionMouseTracking, params: { targets: ['#target'] } }
+        ],
+        data: {
+            task: 'draw'
+        }
+    };
+    timeline.push(trial_draw);
+
+    // Mouse-tracking replay trial
+    var trial_replay = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<div id="target" style="width:250px; height: 250px; background-color: #333; margin: auto; position: relative;"></div>',
+        choices: ['Done'],
+        prompt: "<p>Here's the recording of your mouse movements</p>",
+        on_load: function () {
+            var mouseMovements = jsPsych.data.get().last(1).values()[0].mouse_tracking_data;
+            var targetRect = jsPsych.data.get().last(1).values()[0].mouse_tracking_targets['#target'];
+            var startTime = performance.now();
+            function draw_frame() {
+                var timeElapsed = performance.now() - startTime;
+                var points = mouseMovements.filter((x) => x.t <= timeElapsed);
+                var html = ``;
+                for (var p of points) {
+                    html += `<div style="width: 3px; height: 3px; background-color: blue; position: absolute; top: ${p.y - 1 - targetRect.top}px; left: ${p.x - 1 - targetRect.left}px;"></div>`
+                }
+                document.querySelector('#target').innerHTML = html;
+                if (points.length < mouseMovements.length) {
+                    requestAnimationFrame(draw_frame);
+                }
+            }
+            requestAnimationFrame(draw_frame);
+        },
+        data: {
+            task: 'replay'
+        }
+    }
+    timeline.push(trial_replay);
+
+    // Image sorting trial (NOTE: this seems to work for Chrome but not Safari)
     stimuli_to_sort = [];
     list_image_num = arange(40, 60, 1);
     for (var itr = 0; itr < 5; itr += 1) {
@@ -92,7 +141,6 @@
         sort_area_height: 500,
         prompt: "<p>Click and drag the images below to sort them so that similar images are close together.</p>",
         prompt_location: 'below',
-
     };
     timeline.push(trial_sort);
 

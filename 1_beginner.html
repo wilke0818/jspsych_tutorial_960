@@ -29,7 +29,7 @@
     var timeline = [];
 
     // Add some trial objects to the timeline (like appending dictionaries to a Python list)
-    var trial_instructions = {
+    var first_page = {
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
         stimulus: [
             '<h2>Simple image classification experiment</h2>' +
@@ -39,7 +39,7 @@
         ],
         choices: ['Begin experiment'],
     };
-    timeline.push(trial_instructions);
+    timeline.push(first_page);
 
     var trial_0 = {
         type: jsPsychImageButtonResponse, // This trial will use the "image-button-response" plugin
@@ -74,7 +74,7 @@
     };
     timeline.push(trial_2);
 
-    var trial_end = {
+    var last_page = {
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
         stimulus: [
             '<h2>Press the button below to end experiment.</h2>' +
@@ -82,7 +82,7 @@
         ],
         choices: ['End experiment'],
     };
-    timeline.push(trial_end);
+    timeline.push(last_page);
 
     // Run the timeline
     jsPsych.run(timeline);
