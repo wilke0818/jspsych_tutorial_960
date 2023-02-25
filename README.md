@@ -120,13 +120,20 @@ With just these pieces, it can be quite straightforward to collect data from hug
 
 <br>
 
-# **Tutorial contents**
+# **Contents**
 
 * [0_hello_world.html](0_hello_world.html) : anatomy of an html file + jsPsych basics (timeline and plugins)
 * [1_beginner.html](1_beginner.html) : toy image classification experiment + printing/downloading data locally
 * [2_intermediate.html](2_intermediate.html) : timeline variables and nested timelines + writing data to server
-* [3_advanced.html](3_advanced.html) : programatically generating timeline variables + URL variables + feedback
+* [3_advanced.html](3_advanced.html) : programatically generating timeline variables + pre-loading images + feedback
 * [4_expert.html](4_expert.html) : fancier plugins and extensions (mouse-tracking / sorting) + integration with Prolific
+
+* [template.html](template.html) : **blank experiment for you to fill in during the tutorial**
+
+* [util.js](util.js) : some helpful JavaScript functions that can be called within html files
+* [write_data.php](write_data.php) : PHP script that can receive data from a webpage and write it to file
+
+<br>
 
 # **Helpful resources**
 - [Documentation for jsPsych](https://www.jspsych.org/) (**most helpful resource for actually coding your experiment webpage**)

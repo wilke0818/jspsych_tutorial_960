@@ -73,7 +73,7 @@
         stimulus: [
             '<h2>Simple image classification experiment</h2>' +
             '<p>In this experiment, you will briefly see images of human faces.</p>' +
-            '<p>Your task is ...</p>'
+            '<p>Your task is to...</p>'
         ],
         choices: ['Begin experiment'],
     };
@@ -144,6 +144,7 @@
     };
     timeline.push(trial_sort);
 
+    // Run the timeline
     jsPsych.run(timeline);
 </script>
 
