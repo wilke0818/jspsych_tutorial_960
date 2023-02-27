@@ -98,7 +98,7 @@ With just these pieces, it can be quite straightforward to collect data from hug
 <br>
 
 6. Follow [these instructions](https://code.visualstudio.com/docs/remote/ssh#_connect-to-a-remote-host) to make a new SSH connection to Athena via the **Remote - SSH extension in VSCode**.
-    * For `ssh user@hostname`, you will use `ssh {kerberos}@athena.dialup.mit.edu` with your own kerberos.
+    * For `ssh user@hostname`, you will use `ssh {kerberos}@athena.dialup.mit.edu` with your own kerberos. If VSCode does not automatically detect that Athena is a Linux server, you may need to manually select Linux when prompted.
     * You should be prompted for your kerberos password and two-factor authentification in the VSCode search bar.
     * Once successfully connected, you should be able to open your `web_scripts` folder in VSCode.
     * Within that folder, you should see the `index.html` file that was created in the last part of **Step #3**. Editing the `index.html` file will change what you see when you visit your scripts.mit.edu homepage (e.g., https://msaddler.scripts.mit.edu). Note that updates may take a couple minutes to appear on the web.
