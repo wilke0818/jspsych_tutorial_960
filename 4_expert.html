@@ -50,6 +50,7 @@
     });
 
     var timeline = [];
+    var post_validation_timeline = [];
 
 
 
@@ -141,7 +142,7 @@
           console.log(jsPsych.data.get().filter({task: 'validate'}).values());
           console.log(validation_data);
           return validation_data.percent_in_roi.some(function(x){
-            var minimum_percent_acceptable = 50;
+            var minimum_percent_acceptable = 40;
             return x < minimum_percent_acceptable;
           });
         },
@@ -151,6 +152,11 @@
     }
 
     timeline.push(recalibrate)
+    timeline.push(recalibrate)
+
+    
+
+    
 
     var calibration_done = {
         type: jsPsychHtmlButtonResponse,
@@ -160,9 +166,42 @@
         choices: ['OK']
     }
 
+    var failed_validation = {
+      type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
+      stimulus: [
+            '<h2>Unfortunately we couldn\'t get our gaze detection working well enough to run the experiment</h2>' +
+            '<p>Feel free to retry the experiment in a place with possibly better lighting.</p>' +
+            '<p>We appreciate your efforts! Thanks for trying!</p>'
+      ],
+      choices: ['End experiment'],
+      on_finish: function(data){
+        jsPsych.endExperiment();
+      }
+    };
+
+    var final_check = {
+        timeline: [failed_validation],
+        conditional_function: function(){
+          var validation_datas = jsPsych.data.get().filter({task: 'validate'}).values();
+          var validation_data = validation_datas[validation_datas.length-1]
+          console.log(jsPsych.data.get().filter({task: 'validate'}).values());
+          console.log(validation_data);
+          return validation_data.percent_in_roi.some(function(x){
+            var minimum_percent_acceptable = 40;
+            return x < minimum_percent_acceptable;
+          });
+        },
+        data: {
+          phase: 'recalibration'
+        }
+    }
+
+    timeline.push(final_check);
+
     timeline.push(calibration_done)
 
-
+    
+    
 
     // The `write_data_to_server` function requires two global variables to be defined:
     // `url_write_data_php` (web location of the write_data.php script) and `output_filename`
