@@ -85,9 +85,9 @@
 
     var calibration_trial = {
         type: jsPsychWebgazerCalibrate,
-        calibration_points: [[25,25], [50, 25], [75,25],
-                             [25,50], [50, 50], [75,50],
-                             [25,75], [50, 75], [75,75]],
+        calibration_points: [[15,15], [50, 15], [85,15],
+                             [15,50], [50, 50], [85,50],
+                             [15,85], [50, 85], [85,85]],
                              
         calibration_mode: 'click',
         repetitions_per_point: 2
@@ -110,7 +110,7 @@
     var validation = {
         type: jsPsychWebgazerValidate,
         validation_points: [
-          [20,20],[80,20],[50,50],[20,80],[80,80]
+          [25,25],[75,25],[50,50],[25,75],[75,75]
         ],
         roi_radius: 200,
         time_to_saccade: 1000,
