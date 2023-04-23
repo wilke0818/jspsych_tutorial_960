@@ -220,7 +220,15 @@
             stimulus: function() {
               var left = jsPsych.timelineVariable('left_image')
               var right = jsPsych.timelineVariable('right_image')
-              return  `<img src=${left}/><img src=${right}/>`
+              return  `
+              <div>
+                <div style="display: inline-block;">
+                  <img height="600" width="600" src=${left}/>
+                </div>
+                <div style="display: inline-block;">
+                  <img height="600" width="600" src=${right}/>
+                </div>
+              </div>`
             },
             trial_duration: 10000,
             choices: ['Image 1', 'Image 2'],
