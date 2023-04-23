@@ -7,6 +7,7 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="./jspsych/dist/jspsych.js"></script>
     <link href="./jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="override.css" rel="stylesheet" type="text/css" />
     <script src="./jspsych/dist/plugin-preload.js"></script>
     <!-- <script src="https://unpkg.com/@jspsych/plugin-instructions@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script> -->
@@ -76,7 +77,7 @@
         type: jsPsychWebgazerInitCamera
     }
 
-    timeline.push(init_camera_trial)
+    // timeline.push(init_camera_trial)
 
     var calibration_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -87,7 +88,7 @@
         choices: ['Got it'],
     }
 
-    timeline.push(calibration_instructions)
+    // timeline.push(calibration_instructions)
 
     var calibration_trial = {
         type: jsPsychWebgazerCalibrate,
@@ -99,7 +100,7 @@
         repetitions_per_point: 2
     }
 
-    timeline.push(calibration_trial)
+    // timeline.push(calibration_trial)
 
     var validation_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -111,7 +112,7 @@
         choices: ['Got it'],
         post_trial_gap: 1000
     }
-    timeline.push(validation_instructions)
+    // timeline.push(validation_instructions)
 
     var validation = {
         type: jsPsychWebgazerValidate,
@@ -127,7 +128,7 @@
         }
     }
 
-    timeline.push(validation)
+    // timeline.push(validation)
 
     var recalibrate_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -200,7 +201,7 @@
 
     // timeline.push(final_check);
 
-    timeline.push(calibration_done)
+    // timeline.push(calibration_done)
 
     var timeline_variables_for_trials = [];
     image_nums = arange(1, 298, 1) // 3 images numbered 50 to 52
@@ -221,14 +222,13 @@
               var left = jsPsych.timelineVariable('left_image')
               var right = jsPsych.timelineVariable('right_image')
               return  `
-              <div>
-                <div style="display: inline-block;">
+                <div class="left_image">
                   <img height="300" width="300" src=${left}/>
                 </div>
-                <div style="display: inline-block;">
+                <div class="right_image">
                   <img height="300" width="300" src=${right}/>
                 </div>
-              </div>`
+              `
             },
             // trial_duration: 10000,
             choices: ['Image 1', 'Image 2'],

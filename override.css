@@ -1,0 +1,35 @@
+.separate_images {
+    display: grid;
+    align-content: center;
+    width: 100%;
+}
+
+.left_image {
+    display: inline;
+    float: left;
+    grid-column: 1;
+}
+
+.right_image {
+    display: inline;
+    float: right;
+    grid-column: 2;
+}
+
+div.separate_images #jspsych-html-button-response-stimulus{
+    display: grid;
+}
+
+div.separate_images #jspsych-html-button-response-button-0 {
+    margin: 0px;
+    width: calc(50% - 16px);
+    justify-items: center;
+    float: left;
+}
+
+div.separate_images #jspsych-html-button-response-button-1 {
+    margin: 0px;
+    width: calc(50% - 16px);
+    justify-items: center;
+    float: right;
+}
