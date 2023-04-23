@@ -207,8 +207,8 @@
     for (var i = 0; i < NUM_TRIALS; i++) {
       var pair = jsPsych.randomization.sampleWithoutReplacement(image_nums, 2)
       var factor = {
-        left_image: `./images/MIT_BENCHMARK_IMAGES/SM/i${pair[0]}.jpg`,
-        right_image: `./images/MIT_BENCHMARK_IMAGES/SM/i${pair[1]}.jpg`
+        left_image: `./images/MIT_BENCHMARK_IMAGES/i${pair[0]}.jpg`,
+        right_image: `./images/MIT_BENCHMARK_IMAGES/i${pair[1]}.jpg`
       }
       timeline_variables_for_trials.push(factor)
     }
