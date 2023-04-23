@@ -11,6 +11,7 @@
     <!-- <script src="https://unpkg.com/@jspsych/plugin-instructions@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script> -->
     <script src="./jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="./jspsych/dist/plugin-image-button-response.js"></script>
     <!-- <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.2"></script> -->
@@ -34,7 +35,7 @@
 <body></body>
 
 <script>
-
+    const NUM_TRIALS = 20;
     // Initialize the jsPsych object (possibly with arguments: https://www.jspsych.org/7.3/reference/jspsych/)
     var jsPsych = initJsPsych({
         on_finish: function () {
@@ -52,7 +53,11 @@
     var timeline = [];
     var post_validation_timeline = [];
 
-
+    var preload = {
+        type: jsPsychPreload,
+        auto_preload: true,
+    };
+    timeline.push(preload);
 
     var camera_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -151,12 +156,9 @@
         }
     }
 
-    timeline.push(recalibrate)
-    timeline.push(recalibrate)
+    // timeline.push(recalibrate)
+    // timeline.push(recalibrate)
 
-    
-
-    
 
     var calibration_done = {
         type: jsPsychHtmlButtonResponse,
@@ -196,11 +198,47 @@
         }
     }
 
-    timeline.push(final_check);
+    // timeline.push(final_check);
 
     timeline.push(calibration_done)
 
-    
+    var timeline_variables_for_trials = [];
+    image_nums = arange(1, 298, 1) // 3 images numbered 50 to 52
+    for (var i = 0; i < NUM_TRIALS; i++) {
+      var pair = jsPsych.randomization.sampleWithoutReplacement(image_nums, 2)
+      var factor = {
+        left_image: `./images/MIT_BENCHMARK_IMAGES/i${pair[0]}.jpg`,
+        right_image: `./images/MIT_BENCHMARK_IMAGES/i${pair[1]}.jpg`
+      }
+      timeline_variables_for_trials.push(factor)
+    }
+    console.log(timeline_variables_for_trials)
+
+    var timeline_for_trials = [
+        {
+            type: jsPsychHtmlButtonResponse, 
+            stimulus: function() {
+              var left = jsPsych.timelineVariable('left_image')
+              var right = jsPsych.timelineVariable('right_image')
+              return  `<img src=${left}/><img src=${right}/>`
+            },
+            trial_duration: 10000,
+            choices: ['Image 1', 'Image 2'],
+            data: {
+                left_image: jsPsych.timelineVariable('left_image'),
+                right_image: jsPsych.timelineVariable('right_image')
+            },
+        }
+    ];
+    console.log(jsPsych.timelineVariable('left_image'))
+    console.log(timeline_for_trials)
+
+    var trials = {
+        timeline: timeline_for_trials,
+        timeline_variables: timeline_variables_for_trials,
+        // randomize_order: true,
+    };
+    timeline.push(trials);
     
 
     // The `write_data_to_server` function requires two global variables to be defined:
