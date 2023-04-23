@@ -223,15 +223,16 @@
               return  `
               <div>
                 <div style="display: inline-block;">
-                  <img height="400" width="400" src=${left}/>
+                  <img height="300" width="300" src=${left}/>
                 </div>
                 <div style="display: inline-block;">
-                  <img height="400" width="400" src=${right}/>
+                  <img height="300" width="300" src=${right}/>
                 </div>
               </div>`
             },
-            trial_duration: 10000,
+            // trial_duration: 10000,
             choices: ['Image 1', 'Image 2'],
+            css_classes: ['separate_images'],
             data: {
                 left_image: jsPsych.timelineVariable('left_image'),
                 right_image: jsPsych.timelineVariable('right_image')
