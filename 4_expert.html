@@ -8,22 +8,11 @@
     <script src="./jspsych/dist/jspsych.js"></script>
     <link href="./jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="override.css" rel="stylesheet" type="text/css" />
+    <script src="./jspsych/dist/plugin-browser-check.js"></script>
     <script src="./jspsych/dist/plugin-preload.js"></script>
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-instructions@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script> -->
     <script src="./jspsych/dist/plugin-html-button-response.js"></script>
     <script src="./jspsych/dist/plugin-image-button-response.js"></script>
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.2"></script> -->
     <script src="./jspsych/dist/plugin-survey-text.js"></script>
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-html@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-image@1.1.2"></script> -->
-    <!-- <script src="https://unpkg.com/@jspsych/plugin-free-sort@1.0.2"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/gh/jspsych/jspsych@jspsych@7.0.0/examples/js/webgazer/webgazer.js"></script> -->
     <script src="./js/webgazer/webgazer.js"></script>
     <script src="./jspsych/dist/extension-webgazer.js"></script>
     <!-- <script src="https://unpkg.com/@jspsych/extension-mouse-tracking@1.0.2"></script> -->
@@ -37,11 +26,21 @@
 <body></body>
 
 <script>
+    hash = function(val){
+      var hash = 0;
+      for (var i = 0; i < val.length; i++) {
+        var code = val.charCodeAt(i);
+        hash = ((hash<<5)-hash)+code;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash;
+    }
+
     const NUM_TRIALS = 20;
     // Initialize the jsPsych object (possibly with arguments: https://www.jspsych.org/7.3/reference/jspsych/)
     var jsPsych = initJsPsych({
         on_finish: function () {
-            jsPsych.data.displayData();
+            // jsPsych.data.displayData();
             write_data_to_server();
         },
         override_safe_mode: true,
@@ -123,18 +122,17 @@
         preamble: `
           <p>Thank you for helping us with our experiment!</p>
           <p>We are trying to investigate what humans are interested in and how well computer models can identify and explain what we might find interesting.</p>
-          <p>This experiment requires you to use Google Chrome. We have found that other browsers are unable to support some of the tech.</p>
-          <p>We ask for your kerb in order to check that you're an MIT student and do not save it.</p>
+          <p>This experiment requires you be on Google Chrome on your computer. We have found that other browsers are unable to support some of the tech.</p>
           <p>For posterity, here is our codebase and feel free to reach out with questions: https://github.com/wilke0818/jspsych_tutorial_960</p>
         `,
         choices: ['Got it'],
         on_finish: function() {
           kerb = jsPsych.data.getLastTrialData().trials[0].response.kerb
           console.log(kerb)
-          // var subject_id = kerb;
+          var subject_id = hash(kerb).toString(16);
           // console.log(`subject_id from URL: ${subject_id}`);
           // if (!subject_id) {
-          subject_id = jsPsych.randomization.randomID(kerb.length);
+          // subject_id = jsPsych.randomization.randomID(kerb.length);
           console.log(`subject_id randomly assigned: ${subject_id}`);
           // }
           output_filename = `data/${subject_id}.json`;
@@ -144,8 +142,25 @@
         }
     }
 
-    timeline.push(start_page)
+    var browser = {
+      type: jsPsychBrowserCheck,
+      inclusion_function: (data) => {
+        return 'chrome' == data.browser && data.mobile === false;
+      },
+      minimum_height: 800,
+      minimum_width: 1400,
+      exclusion_message: (data) => {
+        if(data.mobile){
+          return '<p>You must use a desktop/laptop computer to participate in this experiment.</p>';
+        } else if(data.browser !== 'chrome'){
+          return '<p>You must use Chrome as your browser to complete this experiment.</p>'
+        }
+      }
+    };
 
+
+    timeline.push(start_page)
+    timeline.push(browser)
     
 
     var camera_instructions = {
@@ -155,7 +170,7 @@
           <p>You will be prompted to do this on the next screen.</p>
           <p>If you do not wish to allow use of your camera, you cannot participate in this experiment.<p>
           <p>It may take up to 30 seconds for the camera to initialize after you give permission.</p>
-          <p>Note, though your camera is being used, no video is being recorded. We are using an eye tracker to better understand  </p>
+          <p>Note, though your camera is being used, no video is being recorded. We are using an eye tracker to better compare human and machines. </p>
         `,
         choices: ['Got it'],
     }
@@ -255,7 +270,7 @@
         stimulus: `
           <p>Great, we're done with calibration!</p>
           <p>On the next page we'll start the experiment. You'll see ${NUM_TRIALS} pairs of images and for each pair choose the photo you find more interesting.</p>
-          <p>There are no right or wrong answers. Take as little or as much time as you need but we do have a timeout of 15 seconds.</p>
+          <p>There are no right or wrong answers. Each pair will be up for 15 seconds but take as little or as much time as you need.</p>
         `,
         choices: ['Begin']
     }
@@ -305,9 +320,12 @@
     var last_page = {
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
         stimulus: [
-            '<h2>Press the button below to end experiment. IMPORTANT: YOU MUST HIT THE END BUTTON OR YOUR DATA WILL BE LOST (dumb software).</h2>' +
+            '<h2>Press the button below to end experiment.</h2>' +
             '<p>Thank you for participating!</p>'
         ],
+        on_load: function() {
+          write_data_to_server();
+        },
         choices: ['End experiment'],
     };
     timeline.push(last_page);
