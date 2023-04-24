@@ -258,7 +258,7 @@
           return validation_data.percent_in_roi.some(function(x){
             var minimum_percent_acceptable = 40;
             return x < minimum_percent_acceptable;
-          }) || average(validation_data.percent_in_roi) > 60;
+          }) || average(validation_data.percent_in_roi) < 70;
         },
         data: {
           phase: 'recalibration'
