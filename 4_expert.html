@@ -251,10 +251,12 @@
           var validation_data = validation_datas[validation_datas.length-1]
           console.log(jsPsych.data.get().filter({task: 'validate'}).values());
           console.log(validation_data);
+          console.log(average(validation_data.percent_in_roi))
+          const average = array => array.reduce((a, b) => a + b) / array.length;
           return validation_data.percent_in_roi.some(function(x){
             var minimum_percent_acceptable = 40;
             return x < minimum_percent_acceptable;
-          });
+          }) || average(validation_data.percent_in_roi) > 60;
         },
         data: {
           phase: 'recalibration'
@@ -321,9 +323,11 @@
         type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
         stimulus: [
             '<h2>Press the button below to end experiment.</h2>' +
-            '<p>Thank you for participating!</p>'
+            '<p>Thank you for participating!</p>' +
+            '<p>Note your camera might claim to still be on which seems to be a bug of the eyetracker we\'re using. Once you end the experiment exiting out of the tab should fix this.'
         ],
         on_load: function() {
+          jsPsych.extensions.webgazer.pause();
           write_data_to_server();
         },
         choices: ['End experiment'],
