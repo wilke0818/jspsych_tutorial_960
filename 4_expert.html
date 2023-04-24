@@ -223,10 +223,10 @@
         validation_points: [
           [25,25],[75,25],[50,50],[25,75],[75,75]
         ],
-        roi_radius: 200,
+        roi_radius: 225,
         time_to_saccade: 1000,
         validation_duration: 2500,
-        show_validation_data: true,
+        // show_validation_data: true,
         data: {
           task: 'validate'
         }
@@ -251,8 +251,10 @@
           var validation_data = validation_datas[validation_datas.length-1]
           console.log(jsPsych.data.get().filter({task: 'validate'}).values());
           console.log(validation_data);
-          console.log(average(validation_data.percent_in_roi))
+          
           const average = array => array.reduce((a, b) => a + b) / array.length;
+
+          console.log(average(validation_data.percent_in_roi))
           return validation_data.percent_in_roi.some(function(x){
             var minimum_percent_acceptable = 40;
             return x < minimum_percent_acceptable;
