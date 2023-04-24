@@ -19,6 +19,7 @@
     <!-- <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.2"></script> -->
+    <script src="./jspsych/dist/plugin-survey-text.js"></script>
     <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-html@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-categorize-image@1.1.2"></script> -->
     <!-- <script src="https://unpkg.com/@jspsych/plugin-free-sort@1.0.2"></script> -->
@@ -41,7 +42,7 @@
     var jsPsych = initJsPsych({
         on_finish: function () {
             jsPsych.data.displayData();
-            // write_data_to_server();
+            write_data_to_server();
         },
         override_safe_mode: true,
         extensions: [
@@ -84,23 +85,68 @@
                 </div>
               `
             },
-            // trial_duration: 10000,
+            trial_duration: 15000,
             choices: ['Image 1', 'Image 2'],
             css_classes: ['separate_images'],
             data: {
                 left_image: jsPsych.timelineVariable('left_image'),
                 right_image: jsPsych.timelineVariable('right_image')
             },
+            extensions: [
+              {
+                type: jsPsychExtensionWebgazer,
+                params: {targets: ['.left_image', '.right_image', '#jspsych-html-button-response-button-0', '#jspsych-html-button-response-button-1']}
+              }
+            ]
+          
         }
     ];
-    console.log(jsPsych.timelineVariable('left_image'))
-    console.log(timeline_for_trials)
+    // console.log(jsPsych.timelineVariable('left_image'))
+    // console.log(timeline_for_trials)
+
+    var kerb = ''
+    var url_experiment_dir = 'https://wilke18.scripts.mit.edu/jspsych_tutorial_960/';
+    var url_write_data_php = url_experiment_dir + 'write_data.php';
+    var output_filename = ''
 
     var preload = {
         type: jsPsychPreload,
         images: images_to_preload
     };
     timeline.push(preload);
+
+    var start_page = {
+        type: jsPsychSurveyText,
+        questions: [
+          {prompt: 'What is your kerb?', required: true, name: 'kerb'}
+        ],
+        preamble: `
+          <p>Thank you for helping us with our experiment!</p>
+          <p>We are trying to investigate what humans are interested in and how well computer models can identify and explain what we might find interesting.</p>
+          <p>This experiment requires you to use Google Chrome. We have found that other browsers are unable to support some of the tech.</p>
+          <p>We ask for your kerb in order to check that you're an MIT student and do not save it.</p>
+          <p>For posterity, here is our codebase and feel free to reach out with questions: https://github.com/wilke0818/jspsych_tutorial_960</p>
+        `,
+        choices: ['Got it'],
+        on_finish: function() {
+          kerb = jsPsych.data.getLastTrialData().trials[0].response.kerb
+          console.log(kerb)
+          // var subject_id = kerb;
+          // console.log(`subject_id from URL: ${subject_id}`);
+          // if (!subject_id) {
+          subject_id = jsPsych.randomization.randomID(kerb.length);
+          console.log(`subject_id randomly assigned: ${subject_id}`);
+          // }
+          output_filename = `data/${subject_id}.json`;
+          console.log(`Data will be saved to: ${url_experiment_dir + output_filename}`);
+          
+          return;
+        }
+    }
+
+    timeline.push(start_page)
+
+    
 
     var camera_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -109,6 +155,7 @@
           <p>You will be prompted to do this on the next screen.</p>
           <p>If you do not wish to allow use of your camera, you cannot participate in this experiment.<p>
           <p>It may take up to 30 seconds for the camera to initialize after you give permission.</p>
+          <p>Note, though your camera is being used, no video is being recorded. We are using an eye tracker to better understand  </p>
         `,
         choices: ['Got it'],
     }
@@ -119,7 +166,7 @@
         type: jsPsychWebgazerInitCamera
     }
 
-    // timeline.push(init_camera_trial)
+    timeline.push(init_camera_trial)
 
     var calibration_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -130,7 +177,7 @@
         choices: ['Got it'],
     }
 
-    // timeline.push(calibration_instructions)
+    timeline.push(calibration_instructions)
 
     var calibration_trial = {
         type: jsPsychWebgazerCalibrate,
@@ -142,7 +189,7 @@
         repetitions_per_point: 2
     }
 
-    // timeline.push(calibration_trial)
+    timeline.push(calibration_trial)
 
     var validation_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -154,7 +201,7 @@
         choices: ['Got it'],
         post_trial_gap: 1000
     }
-    // timeline.push(validation_instructions)
+    timeline.push(validation_instructions)
 
     var validation = {
         type: jsPsychWebgazerValidate,
@@ -170,7 +217,7 @@
         }
     }
 
-    // timeline.push(validation)
+    timeline.push(validation)
 
     var recalibrate_instructions = {
         type: jsPsychHtmlButtonResponse,
@@ -199,7 +246,7 @@
         }
     }
 
-    // timeline.push(recalibrate)
+    timeline.push(recalibrate)
     // timeline.push(recalibrate)
 
 
@@ -207,8 +254,10 @@
         type: jsPsychHtmlButtonResponse,
         stimulus: `
           <p>Great, we're done with calibration!</p>
+          <p>On the next page we'll start the experiment. You'll see ${NUM_TRIALS} pairs of images and for each pair choose the photo you find more interesting.</p>
+          <p>There are no right or wrong answers. Take as little or as much time as you need but we do have a timeout of 15 seconds.</p>
         `,
-        choices: ['OK']
+        choices: ['Begin']
     }
 
     var failed_validation = {
@@ -241,9 +290,9 @@
         }
     }
 
-    // timeline.push(final_check);
+    timeline.push(final_check);
 
-    // timeline.push(calibration_done)
+    timeline.push(calibration_done)
 
 
     var trials = {
@@ -252,112 +301,30 @@
         // randomize_order: true,
     };
     timeline.push(trials);
+
+    var last_page = {
+        type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
+        stimulus: [
+            '<h2>Press the button below to end experiment. IMPORTANT: YOU MUST HIT THE END BUTTON OR YOUR DATA WILL BE LOST (dumb software).</h2>' +
+            '<p>Thank you for participating!</p>'
+        ],
+        choices: ['End experiment'],
+    };
+    timeline.push(last_page);
     
 
     // The `write_data_to_server` function requires two global variables to be defined:
     // `url_write_data_php` (web location of the write_data.php script) and `output_filename`
-    // var url_experiment_dir = 'https://msaddler.scripts.mit.edu/jspsych_tutorial_960/';
+    // var url_experiment_dir = 'https://wilke18.scripts.mit.edu/jspsych_tutorial_960/';
     // var url_write_data_php = url_experiment_dir + 'write_data.php';
-    // var subject_id = jsPsych.data.getURLVariable('subject_id');
+    // var subject_id = kerb;
     // console.log(`subject_id from URL: ${subject_id}`);
     // if (!subject_id) {
     //     subject_id = jsPsych.randomization.randomID(10);
     //     console.log(`subject_id randomly assigned: ${subject_id}`);
     // }
-    // // var subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID'); // capture info from Prolific
-    // // var session_id = jsPsych.data.getURLVariable('SESSION_ID'); // capture info from Prolific
-    // // var study_id = jsPsych.data.getURLVariable('STUDY_ID'); // capture info from Prolific
-    // // var completion_url = 'https://app.prolific.co/submissions/complete?cc=AAAAAAAA'; // Get from Prolific
-    // var output_filename = `data/experiment4_${subject_id}.json`;
+    // var output_filename = `data/${subject_id}.json`;
     // console.log(`Data will be saved to: ${url_experiment_dir + output_filename}`);
-
-    // // Initialize a timeline (just an empty array)
-    // var timeline = [];
-
-    // // A preload object will ensure images are loaded from the server before the trial they are used
-    // var preload = {
-    //     type: jsPsychPreload,
-    //     auto_preload: true,
-    // };
-    // timeline.push(preload);
-
-    // // Always good to put experiment instructions /  disclaimers on the first page
-    // var first_page = {
-    //     type: jsPsychHtmlButtonResponse, // This trial will use the "html-button-response" plugin
-    //     stimulus: [
-    //         '<h2>Demo of fancier plugins</h2>' +
-    //         '<p><b>These plugins may not work with all browswers / devices.</b></p>' +
-    //         '<p>In this experiment, ...</p>' +
-    //         '<p>Your task is to...</p>'
-    //     ],
-    //     choices: ['Begin experiment'],
-    // };
-    // timeline.push(first_page);
-
-    // // Mouse-tracking draw trial
-    // var trial_draw = {
-    //     type: jsPsychHtmlButtonResponse,
-    //     stimulus: '<div id="target" style="width:450px; height: 450px; background-color: #666; margin: auto;"></div>',
-    //     choices: ['Done'],
-    //     prompt: "<p>Move your mouse around inside the square.</p>",
-    //     extensions: [
-    //         { type: jsPsychExtensionMouseTracking, params: { targets: ['#target'] } }
-    //     ],
-    //     data: {
-    //         task: 'draw'
-    //     }
-    // };
-    // timeline.push(trial_draw);
-
-    // // Mouse-tracking replay trial
-    // var trial_replay = {
-    //     type: jsPsychHtmlButtonResponse,
-    //     stimulus: '<div id="target" style="width:450px; height: 450px; background-color: #666; margin: auto; position: relative;"></div>',
-    //     choices: ['Done'],
-    //     prompt: "<p>Here's the recording of your mouse movements</p>",
-    //     on_load: function () {
-    //         var mouseMovements = jsPsych.data.get().last(1).values()[0].mouse_tracking_data;
-    //         var targetRect = jsPsych.data.get().last(1).values()[0].mouse_tracking_targets['#target'];
-    //         var startTime = performance.now();
-    //         function draw_frame() {
-    //             var timeElapsed = performance.now() - startTime;
-    //             var points = mouseMovements.filter((x) => x.t <= timeElapsed);
-    //             var html = ``;
-    //             for (var p of points) {
-    //                 html += `<div style="width: 3px; height: 3px; background-color: blue; position: absolute; top: ${p.y - 1 - targetRect.top}px; left: ${p.x - 1 - targetRect.left}px;"></div>`
-    //             }
-    //             document.querySelector('#target').innerHTML = html;
-    //             if (points.length < mouseMovements.length) {
-    //                 requestAnimationFrame(draw_frame);
-    //             }
-    //         }
-    //         requestAnimationFrame(draw_frame);
-    //     },
-    //     data: {
-    //         task: 'replay'
-    //     }
-    // }
-    // timeline.push(trial_replay);
-
-    // // Image sorting trial (NOTE: this seems to work for Chrome but not Safari)
-    // stimuli_to_sort = [];
-    // list_image_num = jsPsych.randomization.repeat(arange(40, 60, 1), 1);
-    // for (var itr = 0; itr < 6; itr += 1) {
-    //     stimuli_to_sort.push(`images/condition0/${list_image_num[itr]}.png`)
-    // }
-    // console.log(stimuli_to_sort);
-    // var trial_sort = {
-    //     type: jsPsychFreeSort,
-    //     stimuli: stimuli_to_sort,
-    //     stim_width: 100,
-    //     stim_height: 100,
-    //     sort_area_shape: 'square',
-    //     sort_area_width: 500,
-    //     sort_area_height: 500,
-    //     prompt: "<p>Click and drag the images below to sort them so that similar images are close together.</p>",
-    //     prompt_location: 'below',
-    // };
-    // timeline.push(trial_sort);
 
     // // Run the timeline
     jsPsych.run(timeline);
