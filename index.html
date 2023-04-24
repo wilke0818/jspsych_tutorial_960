@@ -157,7 +157,14 @@
         } else if(data.browser !== 'chrome'){
           return '<p>You must use Chrome as your browser to complete this experiment.</p>'
         }
-      }
+      },
+      window_resize_message: `<p>Your browser window is too small to complete this experiment. Please maximize the size of your browser window. 
+        If your browser window is already maximized, you will not be able to complete this experiment.</p>
+        <p>The minimum window width is <span id="browser-check-min-width"></span> px.</p>
+        <p>Your current window width is <span id="browser-check-actual-width"></span> px.</p>
+        <p>The minimum window height is <span id="browser-check-min-height"></span> px.</p>
+        <p>Your current window height is <span id="browser-check-actual-height"></span> px.</p>
+        <p>One way to make sure your browser will work is by zooming out.</p>`
     };
 
 
