@@ -39,10 +39,6 @@
     const NUM_TRIALS = 20;
     // Initialize the jsPsych object (possibly with arguments: https://www.jspsych.org/7.3/reference/jspsych/)
     var jsPsych = initJsPsych({
-        on_finish: function () {
-            // jsPsych.data.displayData();
-            write_data_to_server();
-        },
         override_safe_mode: true,
         show_progress_bar: true,
         extensions: [
